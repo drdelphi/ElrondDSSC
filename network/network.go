@@ -371,9 +371,5 @@ func (nm *NetworkManager) GetAllNodeStates() ([][]byte, error) {
 		return nil, err
 	}
 
-	if len(query)%2 != 0 {
-		return nil, errors.New("invalid response")
-	}
-
 	return query, nil
 }

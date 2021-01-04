@@ -305,11 +305,16 @@ func (b *Bot) sendNodes(user *data.User) {
 		return
 	}
 
-	n := len(list) / 2
-	for i := 0; i < len(list); i += 2 {
-		state := string(list[i])
-		key := hex.EncodeToString(list[i+1])
-		text := fmt.Sprintf("`Node %v/%v`\n\r`Key:` %s\n\r`State:` %s", i/2+1, n, key, state)
+	state := "unknown"
+	n := 0
+	for i := 0; i < len(list); i++ {
+		if !utils.IsValidNodeKey(hex.EncodeToString(list[i])) {
+			state = string(list[i])
+			continue
+		}
+		n++
+		key := hex.EncodeToString(list[i])
+		text := fmt.Sprintf("`Node %v`\n\r`Key:` %s\n\r`State:` %s", n, key, state)
 
 		stakeURL := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=0&gasLimit=12000000&data=stakeNodes@%s&callbackUrl=none",
 			b.walletHook, utils.ContractAddress, key)

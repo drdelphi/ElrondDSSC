@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"github.com/ElrondNetwork/elrond-go/crypto/signing"
@@ -99,4 +100,9 @@ func GetStakeSig(address string, validatorKeyFilename string) ([]byte, error) {
 	}
 
 	return signer.Sign(sk, addrBytes)
+}
+
+func IsValidNodeKey(v string) bool {
+	re := regexp.MustCompile("[0-9a-fA-F]{192}")
+	return re.MatchString(v)
 }
