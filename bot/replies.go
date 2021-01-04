@@ -16,6 +16,7 @@ import (
 func (b *Bot) privateReplyReceived(message *tgbotapi.Message) {
 	user := b.database.GetUserByTgID(int64(message.From.ID))
 	name := utils.FormatTgUser(message.From)
+	log.Info("reply received", "reply to message", message.ReplyToMessage.Text, "message", message.Text, "user", name)
 
 	if user == nil {
 		log.Warn("reply received from unknown user", "reply", message.Text, "user", name)
@@ -102,6 +103,55 @@ func (b *Bot) privateReplyReceived(message *tgbotapi.Message) {
 		text := fmt.Sprintf("%.4f eGLD", amount)
 
 		msg := tgbotapi.NewMessage(user.TgID, "Undelegate")
+		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonURL(text, url),
+			),
+		)
+		b.tgBot.Send(msg)
+	}
+
+	if message.ReplyToMessage.Text == utils.ChangeServiceFeeMessage && user.TgID == b.owner {
+		fee, err := strconv.ParseFloat(message.Text, 32)
+		if err != nil || fee < 0 || fee > 100 {
+			b.sendMessage(user.TgID, "⭕️ Invalid fee")
+			return
+		}
+
+		iFee := uint64(fee * 100)
+		strFee := hex.EncodeToString([]byte{byte(iFee / 256), byte(iFee % 256)})
+
+		url := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=0&gasLimit=6000000&data=changeServiceFee@%s&callbackUrl=none",
+			b.walletHook, utils.ContractAddress, strFee)
+		text := fmt.Sprintf("%.2f%%", fee)
+
+		msg := tgbotapi.NewMessage(user.TgID, "Change service fee")
+		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
+			tgbotapi.NewInlineKeyboardRow(
+				tgbotapi.NewInlineKeyboardButtonURL(text, url),
+			),
+		)
+		b.tgBot.Send(msg)
+	}
+
+	if message.ReplyToMessage.Text == utils.ModifyDelegationCapMessage && user.TgID == b.owner {
+		cap, err := strconv.ParseFloat(message.Text, 32)
+		if err != nil {
+			b.sendMessage(user.TgID, "⭕️ Invalid fee")
+			return
+		}
+
+		fCap := big.NewFloat(cap)
+		fCap.Mul(fCap, b.networkManager.GetDenominator())
+
+		iCap, _ := fCap.Int(nil)
+		strCap := hex.EncodeToString(iCap.Bytes())
+
+		url := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=0&gasLimit=6000000&data=modifyTotalDelegationCap@%s&callbackUrl=none",
+			b.walletHook, utils.ContractAddress, strCap)
+		text := fmt.Sprintf("%.2f eGLD", cap)
+
+		msg := tgbotapi.NewMessage(user.TgID, "Modify delegation cap")
 		msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonURL(text, url),

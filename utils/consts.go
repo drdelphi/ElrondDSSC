@@ -25,4 +25,8 @@ const (
 
 	// AddNodeMessage -
 	AddNodeMessage = "Send the node's validatorKey.pem"
+	// ChangeServiceFeeMessage -
+	ChangeServiceFeeMessage = "Send new service fee"
+	// ModifyDelegationCapMessage -
+	ModifyDelegationCapMessage = "Send new delegation cap"
 )

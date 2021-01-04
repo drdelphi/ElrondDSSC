@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/DrDelphi/ElrondDSSC/utils"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
@@ -56,6 +57,8 @@ func (b *Bot) downloadFile(message *tgbotapi.Message) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	log.Info("file downloaded", "filename", fileName, "user", utils.FormatTgUser(message.From))
 
 	return fileName, nil
 }

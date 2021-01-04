@@ -318,7 +318,7 @@ func (b *Bot) sendNodes(user *data.User) {
 			b.walletHook, utils.ContractAddress, key)
 		reStakeUnStakedURL := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=0&gasLimit=12000000&data=reStakeUnStakedNodes@%s&callbackUrl=none",
 			b.walletHook, utils.ContractAddress, key)
-		unJailURL := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=0&gasLimit=12000000&data=unJailNodes@%s&callbackUrl=none",
+		unJailURL := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=2500000000000000000&gasLimit=12000000&data=unJailNodes@%s&callbackUrl=none",
 			b.walletHook, utils.ContractAddress, key)
 		removeURL := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=0&gasLimit=12000000&data=removeNodes@%s&callbackUrl=none",
 			b.walletHook, utils.ContractAddress, key)

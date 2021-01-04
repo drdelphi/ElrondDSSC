@@ -13,6 +13,7 @@ func (b *Bot) callbackQueryReceived(cb *tgbotapi.CallbackQuery) {
 
 	user := b.database.GetUserByTgID(int64(cb.From.ID))
 	name := utils.FormatTgUser(cb.From)
+	log.Info("callback query received", "callback", cb.Data, "user", name)
 
 	if user == nil {
 		log.Warn("callback received from unknown user", "callback", cb.Data, "user", name)
@@ -157,6 +158,26 @@ func (b *Bot) callbackQueryReceived(cb *tgbotapi.CallbackQuery) {
 		}
 
 		text := utils.AddNodeMessage
+		msg := tgbotapi.NewMessage(user.TgID, text)
+		msg.ReplyMarkup = tgbotapi.ForceReply{
+			ForceReply: true,
+			Selective:  false,
+		}
+		b.tgBot.Send(msg)
+	}
+
+	if cb.Data == "ChangeServiceFee" && user.TgID == b.owner {
+		text := utils.ChangeServiceFeeMessage
+		msg := tgbotapi.NewMessage(user.TgID, text)
+		msg.ReplyMarkup = tgbotapi.ForceReply{
+			ForceReply: true,
+			Selective:  false,
+		}
+		b.tgBot.Send(msg)
+	}
+
+	if cb.Data == "ModifyDelegationCap" && user.TgID == b.owner {
+		text := utils.ModifyDelegationCapMessage
 		msg := tgbotapi.NewMessage(user.TgID, text)
 		msg.ReplyMarkup = tgbotapi.ForceReply{
 			ForceReply: true,
