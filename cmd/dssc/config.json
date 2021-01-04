@@ -1,0 +1,9 @@
+{
+	"botToken":"your bot's token here",
+	"botOwner":0,
+	"databasePath":"../../db/ElrondDSSC.sqlite",
+	"networkAPI":"https://testnet-api.elrond.com",
+	"networkProxy":"http://144.91.109.166:8079",
+	"metaObserver":"http://144.91.109.166:9093",
+	"walletHook":"https://testnet-wallet.elrond.com"
+}
