@@ -92,7 +92,9 @@ func (b *Bot) adminMenu(user *data.User) {
 			MessageID: user.LastMenuID,
 		})
 	}
-	autoActivateURL := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=0&gasLimit=6000000&data=setAutomaticActivation@796573&callbackUrl=none",
+	enableAutoActivateURL := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=0&gasLimit=6000000&data=setAutomaticActivation@796573&callbackUrl=none",
+		b.walletHook, utils.ContractAddress)
+	disableAutoActivateURL := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=0&gasLimit=6000000&data=setAutomaticActivation@6e6f&callbackUrl=none",
 		b.walletHook, utils.ContractAddress)
 	msg := tgbotapi.NewMessage(user.TgID, "`Admin Control Panel`")
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(
@@ -109,7 +111,10 @@ func (b *Bot) adminMenu(user *data.User) {
 			tgbotapi.NewInlineKeyboardButtonData("Modify Delegation Cap", "ModifyDelegationCap"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonURL("Enable Automatic Activation", autoActivateURL),
+			tgbotapi.NewInlineKeyboardButtonURL("Enable Automatic Activation", enableAutoActivateURL),
+		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonURL("Disable Automatic Activation", disableAutoActivateURL),
 		),
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("🚪 Back", "Back"),

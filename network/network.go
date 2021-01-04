@@ -286,7 +286,34 @@ func (nm *NetworkManager) GetTotalUnStaked() (*big.Float, error) {
 
 // GetTotalCumulatedRewards - retrieves the total cumulated rewards from the DSSC
 func (nm *NetworkManager) GetTotalCumulatedRewards() (*big.Float, error) {
-	return nm.getScIntNoArgs("getTotalCumulatedRewards")
+	query := &data.ScQuery{
+		ScAddress: utils.ContractAddress,
+		FuncName:  "getTotalCumulatedRewards",
+		Caller:    "erd1qqqqqqqqqqqqqqqpqqqqqqqqlllllllllllllllllllllllllllsr9gav8",
+	}
+	host := fmt.Sprintf("%s/vm-values/int", nm.networkProxy)
+	body, err := json.Marshal(query)
+	if err != nil {
+		return nil, err
+	}
+	bytes, err := utils.PostHTTP(host, string(body))
+	if err != nil {
+		return nil, err
+	}
+	res := &data.ScIntResult{}
+	err = json.Unmarshal(bytes, res)
+	if err != nil {
+		return nil, err
+	}
+	intRes, ok := big.NewInt(0).SetString(res.Data.Data, 10)
+	if !ok {
+		return nil, errors.New("invalid result: " + res.Error)
+	}
+
+	f := big.NewFloat(0).SetInt(intRes)
+	f.Quo(f, nm.fDenomination)
+
+	return f, nil
 }
 
 // GetTotalUnStakedFromNodes - retrieves the total unstaked from nodes from the DSSC

@@ -237,7 +237,8 @@ func (b *Bot) sendContractInfo(user *data.User) {
 			text += fmt.Sprintf("\n\r`Max delegation cap:` %v eGLD", uint64(info.MaxDelegationCap))
 		}
 		text += fmt.Sprintf("\n\r`Initial owner funds:` %v eGLD", uint64(info.InitialOwnerFunds))
-		text += fmt.Sprintf("\n\r`Unbond period:` %v", info.UnBondPeriod)
+		unbondSeconds := info.UnBondPeriod * 6 // TODO: replace 6 with round duration from network config
+		text += fmt.Sprintf("\n\r`Unbond period:` %v:%02v:%02v", unbondSeconds/3600, unbondSeconds/60%60, unbondSeconds%60)
 		text += fmt.Sprintf("\n\r`Automatic activation:` %v", info.AutomaticActivation)
 		text += fmt.Sprintf("\n\r`Created at nonce:` %v", info.CreatedNonce)
 	}
@@ -277,17 +278,17 @@ func (b *Bot) sendContractInfo(user *data.User) {
 		text += fmt.Sprintf("\n\r`Total unstaked:` %.4f eGLD", fTotalUnStaked)
 	}
 
-	totalUnStakedFromNodes, err := b.networkManager.GetTotalUnStakedFromNodes()
-	if err == nil {
-		fTotalUnStakedFromNodes, _ := totalUnStakedFromNodes.Float64()
-		text += fmt.Sprintf("\n\r`Total unstaked from nodes:` %.4f eGLD", fTotalUnStakedFromNodes)
-	}
+	// totalUnStakedFromNodes, err := b.networkManager.GetTotalUnStakedFromNodes()
+	// if err == nil {
+	// 	fTotalUnStakedFromNodes, _ := totalUnStakedFromNodes.Float64()
+	// 	text += fmt.Sprintf("\n\r`Total unstaked from nodes:` %.4f eGLD", fTotalUnStakedFromNodes)
+	// }
 
-	totalUnBondedFromNodes, err := b.networkManager.GetTotalUnBondedFromNodes()
-	if err == nil {
-		fTotalUnBondedFromNodes, _ := totalUnBondedFromNodes.Float64()
-		text += fmt.Sprintf("\n\r`Total unbonded from nodes:` %.4f eGLD", fTotalUnBondedFromNodes)
-	}
+	// totalUnBondedFromNodes, err := b.networkManager.GetTotalUnBondedFromNodes()
+	// if err == nil {
+	// 	fTotalUnBondedFromNodes, _ := totalUnBondedFromNodes.Float64()
+	// 	text += fmt.Sprintf("\n\r`Total unbonded from nodes:` %.4f eGLD", fTotalUnBondedFromNodes)
+	// }
 
 	b.sendMessage(user.TgID, text)
 }

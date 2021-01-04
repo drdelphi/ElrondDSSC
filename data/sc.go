@@ -4,6 +4,7 @@ type ScQuery struct {
 	ScAddress string   `json:"scAddress"`
 	FuncName  string   `json:"funcName"`
 	Args      []string `json:"args"`
+	Caller    string   `json:"caller,omitempty"`
 }
 
 type ScIntResult struct {
