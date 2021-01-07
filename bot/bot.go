@@ -180,6 +180,10 @@ func (b *Bot) sendBalances(user *data.User) {
 						iRounds := big.NewInt(0).SetBytes(list[i+1])
 						seconds := iRounds.Uint64() * 6 // TODO: get the round duration from network config
 						text += fmt.Sprintf("\n\r    - %.4f eGLD (ETA: %v:%02v:%02v)", amount, seconds/3600, seconds/60%60, seconds%60)
+						if i == 18 {
+							text += "\n\r    ..."
+							break
+						}
 					}
 				}
 			}
@@ -322,7 +326,7 @@ func (b *Bot) sendNodes(user *data.User) {
 			b.walletHook, utils.ContractAddress, key)
 		unBondURL := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=0&gasLimit=12000000&data=unBondNodes@%s&callbackUrl=none",
 			b.walletHook, utils.ContractAddress, key)
-		reStakeUnStakedURL := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=0&gasLimit=12000000&data=reStakeUnStakedNodes@%s&callbackUrl=none",
+		reStakeUnStakedURL := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=0&gasLimit=120000000&data=reStakeUnStakedNodes@%s&callbackUrl=none",
 			b.walletHook, utils.ContractAddress, key)
 		unJailURL := fmt.Sprintf("%s/hook/transaction?receiver=%s&value=2500000000000000000&gasLimit=12000000&data=unJailNodes@%s&callbackUrl=none",
 			b.walletHook, utils.ContractAddress, key)
